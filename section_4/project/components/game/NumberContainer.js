@@ -3,7 +3,7 @@ import Colors from "../../constants/color";
 function NumberContainer({ children }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.numberText}>children</Text>
+      <Text style={styles.numberText}>{children}</Text>
     </View>
   );
 }
