@@ -1,14 +1,9 @@
-import { StatusBar } from "expo-status-bar";
-import {
-  StyleSheet,
-  Text,
-  View,
-  ImageBackground,
-  SafeAreaView,
-} from "react-native";
+import { StyleSheet, ImageBackground, SafeAreaView } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import StartGameScreen from "./screens/StartGameScreen";
+import { useFonts } from "expo-font";
+import AppLoading from "expo-app-loading";
 import { useState } from "react";
+import StartGameScreen from "./screens/StartGameScreen";
 import GameScreen from "./screens/GameScreen";
 import Colors from "./constants/color";
 import GameOverScreen from "./screens/GameOverScreen";
@@ -16,6 +11,15 @@ import GameOverScreen from "./screens/GameOverScreen";
 export default function App() {
   const [userNumber, setuserNumber] = useState();
   const [gameIsOver, setgameIsOver] = useState(true);
+
+  const [fontLoaded] = useFonts({
+    "open-sans": require("./assets/fonts/OpenSans-Regular.ttf"),
+    "open-sans-bold": require("./assets/fonts/OpenSans-Bold.tff"),
+  });
+
+  if (!fontLoaded) {
+    return <AppLoading />;
+  }
 
   function pickedNumberHandler(pickedNumber) {
     setuserNumber(pickedNumber);
