@@ -1,7 +1,7 @@
 /**
  * Unit tests for location utility functions
  */
-import { calculateDistance, isWithinRadius, formatCoordinates } from '../../src/utils/location';
+import { calculateDistance, isWithinRadius, formatCoordinates, GeoCoordinates } from '../../src/utils/location';
 
 // Mock Geolocation module
 jest.mock('@react-native-community/geolocation', () => ({
@@ -50,8 +50,8 @@ describe('Location Utilities', () => {
 
   describe('isWithinRadius', () => {
     it('returns true when point is within radius', () => {
-      const currentLocation = { latitude: 40.7128, longitude: -74.0060 }; // New York
-      const targetLocation = { latitude: 40.7130, longitude: -74.0065 }; // Very close to New York
+      const currentLocation: GeoCoordinates = { latitude: 40.7128, longitude: -74.0060 }; // New York
+      const targetLocation: GeoCoordinates = { latitude: 40.7130, longitude: -74.0065 }; // Very close to New York
       const radius = 100; // 100 meters
       
       const result = isWithinRadius(currentLocation, targetLocation, radius);
@@ -59,8 +59,8 @@ describe('Location Utilities', () => {
     });
     
     it('returns false when point is outside radius', () => {
-      const currentLocation = { latitude: 40.7128, longitude: -74.0060 }; // New York
-      const targetLocation = { latitude: 40.7500, longitude: -74.0500 }; // Further from New York
+      const currentLocation: GeoCoordinates = { latitude: 40.7128, longitude: -74.0060 }; // New York
+      const targetLocation: GeoCoordinates = { latitude: 40.7500, longitude: -74.0500 }; // Further from New York
       const radius = 1000; // 1000 meters
       
       const result = isWithinRadius(currentLocation, targetLocation, radius);
@@ -68,8 +68,8 @@ describe('Location Utilities', () => {
     });
     
     it('returns true when radius is exactly the distance', () => {
-      const currentLocation = { latitude: 40.7128, longitude: -74.0060 };
-      const targetLocation = { latitude: 40.7140, longitude: -74.0080 };
+      const currentLocation: GeoCoordinates = { latitude: 40.7128, longitude: -74.0060 };
+      const targetLocation: GeoCoordinates = { latitude: 40.7140, longitude: -74.0080 };
       
       // Calculate exact distance between the points
       const exactDistance = calculateDistance(
@@ -86,21 +86,21 @@ describe('Location Utilities', () => {
 
   describe('formatCoordinates', () => {
     it('formats coordinates with 6 decimal places', () => {
-      const coordinates = { latitude: 40.7128, longitude: -74.0060 };
+      const coordinates: GeoCoordinates = { latitude: 40.7128, longitude: -74.0060 };
       
       const formatted = formatCoordinates(coordinates);
       expect(formatted).toBe('40.712800, -74.006000');
     });
     
     it('handles coordinates with more decimal places', () => {
-      const coordinates = { latitude: 37.7749275, longitude: -122.4194155 };
+      const coordinates: GeoCoordinates = { latitude: 37.7749275, longitude: -122.4194155 };
       
       const formatted = formatCoordinates(coordinates);
       expect(formatted).toBe('37.774927, -122.419415');
     });
     
     it('handles coordinates with fewer decimal places', () => {
-      const coordinates = { latitude: 51.5, longitude: -0.12 };
+      const coordinates: GeoCoordinates = { latitude: 51.5, longitude: -0.12 };
       
       const formatted = formatCoordinates(coordinates);
       expect(formatted).toBe('51.500000, -0.120000');

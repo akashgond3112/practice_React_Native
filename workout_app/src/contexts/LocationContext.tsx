@@ -1,6 +1,18 @@
 /**
  * Location Context for the PPL Workout App
- * Provides global state management for location data and geofencing
+ * Provides global state manage        // For TypeScript compatibility, we need to wrap this in a Promise
+        const status = await new Promise<string>((resolve) => {
+          Geolocation.requestAuthorization((error) => {
+            if (error && error.code !== 0) {
+              resolve('denied');
+            } else {
+              // Since the API doesn't return a status, we'll check permissions separately
+              Geolocation.getCurrentPosition(
+                () => resolve('granted'),
+                () => resolve('denied')
+              );
+            }
+          }, 'whenInUse');tion data and geofencing
  */
 
 import React, { createContext, useContext, useState, useEffect, useMemo, ReactNode } from 'react';

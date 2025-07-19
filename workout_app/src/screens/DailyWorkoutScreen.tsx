@@ -133,8 +133,9 @@ const DailyWorkoutScreen: React.FC<DailyWorkoutScreenProps> = ({ navigation }) =
 
   if (isLoading) {
     return (
-      <View style={commonStyles.loadingContainer}>
+      <View style={commonStyles.loadingContainer} testID="loading-indicator">
         <ActivityIndicator size="large" color={colors.primary} />
+        <Text>Loading workout...</Text>
       </View>
     );
   }

@@ -1,10 +1,17 @@
 // This file is executed before running tests
+import { jest } from '@jest/globals';
+
+interface AlertButton {
+  text: string;
+  onPress?: () => void;
+  style?: 'default' | 'cancel' | 'destructive';
+}
 
 // Mock the entire react-native module
 jest.mock('react-native', () => {
   return {
     Alert: {
-      alert: jest.fn((title, message, buttons = [{ text: 'OK' }]) => {
+      alert: jest.fn((title: string, message?: string, buttons: AlertButton[] = [{ text: 'OK' }]) => {
         // Simulate pressing the first button if there are buttons
         if (buttons && buttons.length > 0 && buttons[0].onPress) {
           buttons[0].onPress();
@@ -12,12 +19,12 @@ jest.mock('react-native', () => {
       }),
     },
     StyleSheet: {
-      create: jest.fn(styles => styles),
-      flatten: jest.fn(style => style),
+      create: jest.fn((styles: any) => styles),
+      flatten: jest.fn((style: any) => style),
     },
     Platform: {
       OS: 'ios',
-      select: jest.fn(obj => obj.ios),
+      select: jest.fn((obj: { ios: any, android?: any }) => obj.ios),
     },
     Dimensions: {
       get: jest.fn(() => ({ width: 375, height: 812 })),
@@ -46,17 +53,17 @@ jest.mock('react-native', () => {
         interpolate: jest.fn(),
         setValue: jest.fn(),
       })),
-      createAnimatedComponent: jest.fn(component => component),
+      createAnimatedComponent: jest.fn((component: any) => component),
     },
   };
 });
 
 // Mock native modules
-jest.mock('react-native-sqlite-storage', () => require('./__mocks__/sqliteMock.js'));
-jest.mock('@react-native-community/geolocation', () => require('./__mocks__/geolocationMock.js'));
-jest.mock('react-native-background-timer', () => require('./__mocks__/backgroundTimerMock.js'));
-jest.mock('react-native-push-notification', () => require('./__mocks__/pushNotificationMock.js'));
-jest.mock('@react-native-community/push-notification-ios', () => require('./__mocks__/pushNotificationIosMock.js'));
+jest.mock('react-native-sqlite-storage', () => require('./__mocks__/sqliteMock'));
+jest.mock('@react-native-community/geolocation', () => require('./__mocks__/geolocationMock'));
+jest.mock('react-native-background-timer', () => require('./__mocks__/backgroundTimerMock'));
+jest.mock('react-native-push-notification', () => require('./__mocks__/pushNotificationMock'));
+jest.mock('@react-native-community/push-notification-ios', () => require('./__mocks__/pushNotificationIosMock'));
 
 // Mock the react-native-background-actions module
 jest.mock('react-native-background-actions', () => ({
@@ -69,9 +76,9 @@ jest.mock('react-native-background-actions', () => ({
 
 // Mock the react-native-background-fetch module
 jest.mock('react-native-background-fetch', () => ({
-  configure: jest.fn((config) => Promise.resolve(0)),
-  scheduleTask: jest.fn((taskConfig) => Promise.resolve()),
-  finish: jest.fn((taskId) => {}),
+  configure: jest.fn((config: any) => Promise.resolve(0)),
+  scheduleTask: jest.fn((taskConfig: any) => Promise.resolve()),
+  finish: jest.fn((taskId: any) => {}),
   status: {
     RESTRICTED: 0,
     DENIED: 1,
@@ -84,7 +91,7 @@ jest.mock('react-native-background-fetch', () => ({
 
 // Mock react-native-safe-area-context
 jest.mock('react-native-safe-area-context', () => ({
-  SafeAreaProvider: ({ children }) => children,
+  SafeAreaProvider: ({ children }: { children: React.ReactNode }) => children,
   useSafeAreaInsets: () => ({ top: 0, right: 0, bottom: 0, left: 0 }),
 }));
 
@@ -94,7 +101,7 @@ jest.mock('react-native-screens', () => ({
 }));
 
 // Create a basic fileMock for assets
-jest.mock('./__mocks__/fileMock.js', () => '', { virtual: true });
+jest.mock('./__mocks__/fileMock', () => '', { virtual: true });
 
 // Mock navigation
 jest.mock('@react-navigation/native', () => {

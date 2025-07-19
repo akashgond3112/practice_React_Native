@@ -6,7 +6,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import dbManager, { WorkoutDay as DbWorkoutDay, WorkoutEntry as DbWorkoutEntry } from '../database';
 import { getCurrentDate, getDateOffset } from '../utils/dateTime';
-import { prepopulateDatabase } from '../database/prepopulate';
+import { prepopulateExercises, generateWorkoutForDate } from '../database/prepopulate';
 
 // Define types for the context
 export interface WorkoutDay {
@@ -106,7 +106,11 @@ export const WorkoutProvider: React.FC<WorkoutProviderProps> = ({ children }) =>
         await dbManager.init();
         
         // Check if database needs to be prepopulated
-        await prepopulateDatabase();
+        await prepopulateExercises();
+        
+        // Generate workout for today if needed
+        const today = getCurrentDate();
+        await generateWorkoutForDate(today);
         
         // Load today's workout
         await loadWorkoutForDate(getCurrentDate());

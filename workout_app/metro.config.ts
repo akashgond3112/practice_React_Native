@@ -1,9 +1,9 @@
-const { getDefaultConfig, mergeConfig } = require('@react-native/metro-config');
-const os = require('os');
+import { getDefaultConfig, mergeConfig } from '@react-native/metro-config';
+import * as os from 'os';
 
 // Polyfill for older Node.js versions that don't have os.availableParallelism
-if (!os.availableParallelism) {
-  os.availableParallelism = () => {
+if (!('availableParallelism' in os)) {
+  (os as any).availableParallelism = (): number => {
     return Math.max(os.cpus().length - 1, 1);
   };
 }
@@ -16,4 +16,4 @@ if (!os.availableParallelism) {
  */
 const config = {};
 
-module.exports = mergeConfig(getDefaultConfig(__dirname), config);
+export default mergeConfig(getDefaultConfig(__dirname), config);

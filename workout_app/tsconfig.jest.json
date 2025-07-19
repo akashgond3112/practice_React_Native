@@ -10,19 +10,20 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "noEmit": true,
-    "isolatedModules": true,
+    "isolatedModules": false,
     "noImplicitAny": false,
     "strictNullChecks": false
   },
   "include": [
-    "src/**/*",
-    "__tests__/**/*"
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "__tests__/**/*.ts",
+    "__tests__/**/*.tsx",
+    "__mocks__/**/*.ts",
+    "*.ts",
+    "*.tsx"
   ],
   "exclude": [
-    "node_modules",
-    "babel.config.js",
-    "metro.config.js",
-    "jest.config.js",
-    "minimal.jest.config.js"
+    "node_modules"
   ]
 }
