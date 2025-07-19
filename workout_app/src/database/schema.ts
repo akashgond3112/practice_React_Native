@@ -10,10 +10,13 @@ export const TABLES = {
   WORKOUT_DAY: 'workout_day',
   EXERCISE: 'exercise',
   WORKOUT_ENTRY: 'workout_entry',
-};
+} as const;
+
+// Define table types
+export type TableName = keyof typeof TABLES;
 
 // Schema definitions
-export const CREATE_TABLES_QUERIES = [
+export const CREATE_TABLES_QUERIES: string[] = [
   // WorkoutDay table
   `CREATE TABLE IF NOT EXISTS ${TABLES.WORKOUT_DAY} (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -43,14 +46,8 @@ export const CREATE_TABLES_QUERIES = [
 ];
 
 // Indexes for performance
-export const CREATE_INDEXES_QUERIES = [
+export const CREATE_INDEXES_QUERIES: string[] = [
   `CREATE INDEX IF NOT EXISTS idx_workout_day_date ON ${TABLES.WORKOUT_DAY} (date)`,
   `CREATE INDEX IF NOT EXISTS idx_workout_entry_day ON ${TABLES.WORKOUT_ENTRY} (day_id)`,
   `CREATE INDEX IF NOT EXISTS idx_workout_entry_exercise ON ${TABLES.WORKOUT_ENTRY} (exercise_id)`
 ];
-
-// Cleanup query to delete workout data older than 30 days
-export const CLEANUP_OLD_DATA_QUERY = `
-  DELETE FROM ${TABLES.WORKOUT_DAY} 
-  WHERE date < date('now', '-30 days')
-`;

@@ -4,27 +4,27 @@
 
 /**
  * Format a date as YYYY-MM-DD
- * @param {Date} date - The date to format
- * @returns {string} Formatted date string
+ * @param date - The date to format
+ * @returns Formatted date string
  */
-export const formatDate = (date) => {
+export const formatDate = (date: Date): string => {
   return date.toISOString().split('T')[0];
 };
 
 /**
  * Get the current date as YYYY-MM-DD
- * @returns {string} Today's date in YYYY-MM-DD format
+ * @returns Today's date in YYYY-MM-DD format
  */
-export const getCurrentDate = () => {
+export const getCurrentDate = (): string => {
   return formatDate(new Date());
 };
 
 /**
  * Get a date that is n days from today
- * @param {number} days - Number of days to add (or subtract if negative)
- * @returns {string} The resulting date in YYYY-MM-DD format
+ * @param days - Number of days to add (or subtract if negative)
+ * @returns The resulting date in YYYY-MM-DD format
  */
-export const getDateOffset = (days) => {
+export const getDateOffset = (days: number): string => {
   const date = new Date();
   date.setDate(date.getDate() + days);
   return formatDate(date);
@@ -32,10 +32,10 @@ export const getDateOffset = (days) => {
 
 /**
  * Get the day name (Monday, Tuesday, etc.) from a date
- * @param {Date|string} date - Date object or string in YYYY-MM-DD format
- * @returns {string} The day name
+ * @param date - Date object or string in YYYY-MM-DD format
+ * @returns The day name
  */
-export const getDayName = (date) => {
+export const getDayName = (date: Date | string): string => {
   const dateObj = typeof date === 'string' ? new Date(date) : date;
   const days = [
     'Sunday', 'Monday', 'Tuesday', 'Wednesday', 
@@ -45,34 +45,42 @@ export const getDayName = (date) => {
 };
 
 /**
- * Get the workout type (Push, Pull, Legs, Rest) for a given date
- * @param {Date|string} date - Date object or string in YYYY-MM-DD format
- * @returns {string} The workout type
+ * Workout type mapping
  */
-export const getWorkoutTypeForDate = (date) => {
+export type WorkoutType = 'Push' | 'Pull' | 'Legs' | 'Rest';
+
+/**
+ * Day of week to workout type mapping
+ */
+export const WORKOUT_TYPE_MAPPING: Record<number, WorkoutType> = {
+  1: 'Push', // Monday
+  2: 'Pull', // Tuesday
+  3: 'Legs', // Wednesday
+  4: 'Push', // Thursday
+  5: 'Pull', // Friday
+  6: 'Legs', // Saturday
+  0: 'Rest', // Sunday
+};
+
+/**
+ * Get the workout type (Push, Pull, Legs, Rest) for a given date
+ * @param date - Date object or string in YYYY-MM-DD format
+ * @returns The workout type
+ */
+export const getWorkoutTypeForDate = (date: Date | string): WorkoutType => {
   const dateObj = typeof date === 'string' ? new Date(date) : date;
   const dayOfWeek = dateObj.getDay(); // 0 = Sunday, 1 = Monday, etc.
-  
-  const WORKOUT_TYPE_MAPPING = {
-    1: 'Push', // Monday
-    2: 'Pull', // Tuesday
-    3: 'Legs', // Wednesday
-    4: 'Push', // Thursday
-    5: 'Pull', // Friday
-    6: 'Legs', // Saturday
-    0: 'Rest', // Sunday
-  };
   
   return WORKOUT_TYPE_MAPPING[dayOfWeek];
 };
 
 /**
  * Check if a time is within a specified time window
- * @param {string} startTime - Start time in 24-hour format (HH:MM)
- * @param {string} endTime - End time in 24-hour format (HH:MM)
- * @returns {boolean} True if current time is within the window
+ * @param startTime - Start time in 24-hour format (HH:MM)
+ * @param endTime - End time in 24-hour format (HH:MM)
+ * @returns True if current time is within the window
  */
-export const isTimeInWindow = (startTime, endTime) => {
+export const isTimeInWindow = (startTime: string, endTime: string): boolean => {
   const now = new Date();
   const currentHours = now.getHours();
   const currentMinutes = now.getMinutes();

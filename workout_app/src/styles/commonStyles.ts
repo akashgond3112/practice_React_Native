@@ -2,9 +2,22 @@
  * Common styles for the PPL Workout App
  */
 
-import { StyleSheet } from 'react-native';
+import { StyleSheet, TextStyle, ViewStyle } from 'react-native';
 
-export const colors = {
+// Define color palette
+export const colors: {
+  primary: string;
+  primaryDark: string;
+  primaryLight: string;
+  accent: string;
+  background: string;
+  white: string;
+  text: string;
+  textSecondary: string;
+  border: string;
+  completed: string;
+  error: string;
+} = {
   primary: '#4a5bd9',
   primaryDark: '#3949ab',
   primaryLight: '#7986cb',
@@ -18,7 +31,36 @@ export const colors = {
   error: '#f44336',
 };
 
-export const commonStyles = StyleSheet.create({
+// Define style props interface
+interface Styles {
+  container: ViewStyle;
+  content: ViewStyle;
+  card: ViewStyle;
+  row: ViewStyle;
+  spaceBetween: ViewStyle;
+  center: ViewStyle;
+  heading: TextStyle;
+  subheading: TextStyle;
+  text: TextStyle;
+  textSecondary: TextStyle;
+  button: ViewStyle;
+  buttonText: TextStyle;
+  buttonOutline: ViewStyle;
+  buttonOutlineText: TextStyle;
+  buttonSecondary: ViewStyle;
+  errorText: TextStyle;
+  loadingContainer: ViewStyle;
+  divider: ViewStyle;
+  icon: ViewStyle;
+  badgeContainer: ViewStyle;
+  badgeText: TextStyle;
+  shadow: ViewStyle;
+  infoBox: ViewStyle;
+  infoText: TextStyle;
+  completedText: TextStyle;
+}
+
+export const commonStyles = StyleSheet.create<Styles>({
   container: {
     flex: 1,
     backgroundColor: colors.background,

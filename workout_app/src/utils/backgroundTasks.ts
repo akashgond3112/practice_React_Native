@@ -9,7 +9,7 @@ import { getCurrentDate } from './dateTime';
 /**
  * Setup all background tasks for the app
  */
-export const setupBackgroundTasks = () => {
+export const setupBackgroundTasks = (): void => {
   console.log('Setting up background tasks...');
   
   // Schedule data cleanup
@@ -25,7 +25,7 @@ export const setupBackgroundTasks = () => {
  * Schedule data cleanup to run every 30 days
  * This will delete workout entries older than 30 days
  */
-export const scheduleDataCleanup = () => {
+export const scheduleDataCleanup = (): void => {
   const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
 
   // Start a timer that will trigger every 30 days
@@ -37,8 +37,9 @@ export const scheduleDataCleanup = () => {
 
 /**
  * Perform the data cleanup operation
+ * @returns Promise resolving to true if successful, false otherwise
  */
-export const performDataCleanup = async () => {
+export const performDataCleanup = async (): Promise<boolean> => {
   try {
     console.log('Cleaning up old workout data...');
     await dbManager.cleanupOldData();
@@ -57,10 +58,10 @@ export const performDataCleanup = async () => {
 /**
  * Save the last cleanup date to AsyncStorage
  */
-export const saveLastCleanupDate = () => {
+export const saveLastCleanupDate = (): void => {
   const currentDate = getCurrentDate();
   // This would typically use AsyncStorage, but we're using a global variable for simplicity
-  global.lastCleanupDate = currentDate;
+  (global as any).lastCleanupDate = currentDate;
   console.log(`Last cleanup date saved: ${currentDate}`);
 };
 
@@ -68,7 +69,7 @@ export const saveLastCleanupDate = () => {
  * Schedule daily reset at midnight
  * This will prepare the next day's workout entries
  */
-export const scheduleDailyReset = () => {
+export const scheduleDailyReset = (): void => {
   // Calculate time until midnight
   const now = new Date();
   const midnight = new Date(
@@ -91,8 +92,9 @@ export const scheduleDailyReset = () => {
 
 /**
  * Perform the daily reset operation
+ * @returns Promise resolving to true if successful, false otherwise
  */
-export const performDailyReset = async () => {
+export const performDailyReset = async (): Promise<boolean> => {
   try {
     console.log('Performing daily reset...');
     // Additional logic for daily reset could go here
@@ -107,6 +109,6 @@ export const performDailyReset = async () => {
 /**
  * Stop all background timers
  */
-export const stopAllBackgroundTasks = () => {
+export const stopAllBackgroundTasks = (): void => {
   BackgroundTimer.stopBackgroundTimer();
 };

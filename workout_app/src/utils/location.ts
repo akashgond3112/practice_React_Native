@@ -5,18 +5,34 @@
 import Geolocation from '@react-native-community/geolocation';
 
 /**
- * Get the current location coordinates
- * @returns {Promise<{latitude: number, longitude: number}>} Location coordinates
+ * Location coordinates interface
  */
-export const getCurrentLocation = () => {
-  return new Promise((resolve, reject) => {
+export interface GeoCoordinates {
+  latitude: number;
+  longitude: number;
+}
+
+/**
+ * Geolocation error interface
+ */
+export interface GeolocationError {
+  code: number;
+  message: string;
+}
+
+/**
+ * Get the current location coordinates
+ * @returns Location coordinates
+ */
+export const getCurrentLocation = (): Promise<GeoCoordinates> => {
+  return new Promise<GeoCoordinates>((resolve, reject) => {
     Geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
         resolve({ latitude, longitude });
       },
-      (error) => {
-        reject(error);
+      (error: GeolocationError) => {
+        reject(new Error(`Geolocation error: ${error.code} - ${error.message}`));
       },
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
     );
@@ -25,13 +41,18 @@ export const getCurrentLocation = () => {
 
 /**
  * Calculate distance between two coordinates using the Haversine formula
- * @param {number} lat1 - Latitude of first point
- * @param {number} lon1 - Longitude of first point
- * @param {number} lat2 - Latitude of second point
- * @param {number} lon2 - Longitude of second point
- * @returns {number} Distance in meters
+ * @param lat1 - Latitude of first point
+ * @param lon1 - Longitude of first point
+ * @param lat2 - Latitude of second point
+ * @param lon2 - Longitude of second point
+ * @returns Distance in meters
  */
-export const calculateDistance = (lat1, lon1, lat2, lon2) => {
+export const calculateDistance = (
+  lat1: number, 
+  lon1: number, 
+  lat2: number, 
+  lon2: number
+): number => {
   const R = 6371e3; // Earth's radius in meters
   const φ1 = (lat1 * Math.PI) / 180;
   const φ2 = (lat2 * Math.PI) / 180;
@@ -49,12 +70,16 @@ export const calculateDistance = (lat1, lon1, lat2, lon2) => {
 
 /**
  * Check if the current location is within a specified radius of a target location
- * @param {Object} currentLocation - Current location {latitude, longitude}
- * @param {Object} targetLocation - Target location {latitude, longitude}
- * @param {number} radius - Radius in meters
- * @returns {boolean} True if current location is within radius of target
+ * @param currentLocation - Current location {latitude, longitude}
+ * @param targetLocation - Target location {latitude, longitude}
+ * @param radius - Radius in meters
+ * @returns True if current location is within radius of target
  */
-export const isWithinRadius = (currentLocation, targetLocation, radius) => {
+export const isWithinRadius = (
+  currentLocation: GeoCoordinates, 
+  targetLocation: GeoCoordinates, 
+  radius: number
+): boolean => {
   const distance = calculateDistance(
     currentLocation.latitude,
     currentLocation.longitude,
@@ -66,10 +91,10 @@ export const isWithinRadius = (currentLocation, targetLocation, radius) => {
 
 /**
  * Format coordinates for display
- * @param {Object} coordinates - Location coordinates {latitude, longitude}
- * @returns {string} Formatted coordinates string
+ * @param coordinates - Location coordinates {latitude, longitude}
+ * @returns Formatted coordinates string
  */
-export const formatCoordinates = (coordinates) => {
+export const formatCoordinates = (coordinates: GeoCoordinates): string => {
   const { latitude, longitude } = coordinates;
   return `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
 };

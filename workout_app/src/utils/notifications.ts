@@ -10,7 +10,7 @@ import { getWorkoutTypeForDate } from './dateTime';
 /**
  * Initialize notifications for the app
  */
-export const initNotifications = () => {
+export const initNotifications = (): void => {
   // Configure notifications
   configurePushNotifications();
   
@@ -23,7 +23,7 @@ export const initNotifications = () => {
 /**
  * Request notification permissions
  */
-export const requestNotificationPermissions = () => {
+export const requestNotificationPermissions = (): void => {
   if (Platform.OS === 'ios') {
     PushNotificationIOS.requestPermissions({
       alert: true,
@@ -43,7 +43,7 @@ export const requestNotificationPermissions = () => {
 /**
  * Configure push notifications
  */
-export const configurePushNotifications = () => {
+export const configurePushNotifications = (): void => {
   // Configure the notification channel for Android
   PushNotification.createChannel(
     {
@@ -65,7 +65,9 @@ export const configurePushNotifications = () => {
       console.log('NOTIFICATION:', notification);
 
       // Required on iOS only
-      notification.finish(PushNotificationIOS.FetchResult.NoData);
+      if (notification.finish) {
+        notification.finish(PushNotificationIOS.FetchResult.NoData);
+      }
     },
 
     // IOS ONLY
@@ -79,17 +81,17 @@ export const configurePushNotifications = () => {
 
 /**
  * Schedule a local notification
- * @param {string} title - Notification title
- * @param {string} message - Notification message
- * @param {Date} date - When to trigger the notification
- * @param {string} channelId - Android notification channel ID
+ * @param title - Notification title
+ * @param message - Notification message
+ * @param date - When to trigger the notification
+ * @param channelId - Android notification channel ID
  */
 export const scheduleLocalNotification = (
-  title,
-  message,
-  date,
-  channelId = 'workout-reminders'
-) => {
+  title: string,
+  message: string,
+  date: Date,
+  channelId: string = 'workout-reminders'
+): void => {
   PushNotification.localNotificationSchedule({
     channelId,
     title,
@@ -103,15 +105,15 @@ export const scheduleLocalNotification = (
 
 /**
  * Show an immediate local notification
- * @param {string} title - Notification title
- * @param {string} message - Notification message
- * @param {string} channelId - Android notification channel ID
+ * @param title - Notification title
+ * @param message - Notification message
+ * @param channelId - Android notification channel ID
  */
 export const showLocalNotification = (
-  title,
-  message,
-  channelId = 'workout-reminders'
-) => {
+  title: string,
+  message: string,
+  channelId: string = 'workout-reminders'
+): void => {
   PushNotification.localNotification({
     channelId,
     title,
@@ -123,9 +125,9 @@ export const showLocalNotification = (
 
 /**
  * Schedule a workout reminder notification for when the user enters the gym
- * @param {string} date - Date in YYYY-MM-DD format
+ * @param date - Date in YYYY-MM-DD format
  */
-export const scheduleWorkoutReminder = (date) => {
+export const scheduleWorkoutReminder = (date: string): void => {
   const workoutType = getWorkoutTypeForDate(date);
   
   if (workoutType === 'Rest') {
@@ -141,6 +143,6 @@ export const scheduleWorkoutReminder = (date) => {
 /**
  * Cancel all scheduled notifications
  */
-export const cancelAllNotifications = () => {
+export const cancelAllNotifications = (): void => {
   PushNotification.cancelAllLocalNotifications();
 };

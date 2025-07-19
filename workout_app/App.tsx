@@ -10,6 +10,7 @@ import { StatusBar, StyleSheet, useColorScheme, SafeAreaView, LogBox } from 'rea
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { WorkoutStackParamList, TabNavigatorParamList } from './src/types/navigation';
 import { WorkoutProvider } from './src/contexts/WorkoutContext';
 import { LocationProvider } from './src/contexts/LocationContext';
 import { initNotifications } from './src/utils/notifications';
@@ -28,8 +29,8 @@ LogBox.ignoreLogs([
   'AsyncStorage has been extracted from react-native',
 ]);
 
-const Tab = createBottomTabNavigator();
-const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator<TabNavigatorParamList>();
+const Stack = createNativeStackNavigator<WorkoutStackParamList>();
 
 // Stack navigator for the Workout tab
 const WorkoutStack = () => {

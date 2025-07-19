@@ -3,7 +3,7 @@
  * Provides global state management for location data and geofencing
  */
 
-import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo, ReactNode } from 'react';
 import { PermissionsAndroid, Platform } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 import BackgroundTimer from 'react-native-background-timer';
@@ -11,11 +11,48 @@ import { getCurrentLocation, isWithinRadius } from '../utils/location';
 import { isTimeInWindow } from '../utils/dateTime';
 import { scheduleWorkoutReminder } from '../utils/notifications';
 
-// Create the context
-const LocationContext = createContext();
+// Define types
+export interface GeoLocation {
+  latitude: number;
+  longitude: number;
+}
+
+export interface GymLocation extends GeoLocation {
+  id: string;
+  name: string;
+}
+
+interface TimeWindow {
+  start: string;
+  end: string;
+}
+
+interface LocationContextType {
+  gymLocations: GymLocation[];
+  currentLocation: GeoLocation | null;
+  isTrackingEnabled: boolean;
+  locationPermissionGranted: boolean;
+  isAtGym: boolean;
+  error: string | null;
+  workoutTimeWindow: TimeWindow;
+  requestLocationPermissions: () => Promise<boolean>;
+  addGymLocation: () => Promise<boolean>;
+  removeGymLocation: (locationId: string) => void;
+  updateGymLocationName: (locationId: string, newName: string) => void;
+  toggleLocationTracking: () => Promise<boolean>;
+  updateWorkoutTimeWindow: (startTime: string, endTime: string) => void;
+  clearError: () => void;
+}
+
+interface LocationProviderProps {
+  children: ReactNode;
+}
+
+// Create the context with a default value
+const LocationContext = createContext<LocationContextType | undefined>(undefined);
 
 // Custom hook to use the location context
-export const useLocation = () => {
+export const useLocation = (): LocationContextType => {
   const context = useContext(LocationContext);
   if (!context) {
     throw new Error('useLocation must be used within a LocationProvider');
@@ -24,23 +61,36 @@ export const useLocation = () => {
 };
 
 // Context provider component
-export const LocationProvider = ({ children }) => {
-  const [gymLocations, setGymLocations] = useState([]);
-  const [currentLocation, setCurrentLocation] = useState(null);
-  const [isTrackingEnabled, setIsTrackingEnabled] = useState(false);
-  const [locationPermissionGranted, setLocationPermissionGranted] = useState(false);
-  const [isAtGym, setIsAtGym] = useState(false);
-  const [error, setError] = useState(null);
-  const [workoutTimeWindow, setWorkoutTimeWindow] = useState({
+export const LocationProvider = ({ children }: LocationProviderProps): React.ReactElement => {
+  const [gymLocations, setGymLocations] = useState<GymLocation[]>([]);
+  const [currentLocation, setCurrentLocation] = useState<GeoLocation | null>(null);
+  const [isTrackingEnabled, setIsTrackingEnabled] = useState<boolean>(false);
+  const [locationPermissionGranted, setLocationPermissionGranted] = useState<boolean>(false);
+  const [isAtGym, setIsAtGym] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [workoutTimeWindow, setWorkoutTimeWindow] = useState<TimeWindow>({
     start: '17:00', // 5:00 PM
     end: '20:00',   // 8:00 PM
   });
 
   // Request location permissions
-  const requestLocationPermissions = async () => {
+  const requestLocationPermissions = async (): Promise<boolean> => {
     try {
       if (Platform.OS === 'ios') {
-        const status = await Geolocation.requestAuthorization('always');
+        // For TypeScript compatibility, we need to wrap this in a Promise
+        const status = await new Promise<string>((resolve) => {
+          Geolocation.requestAuthorization((error) => {
+            if (error) {
+              resolve('denied');
+            } else {
+              // Since the API doesn't return a status, we'll check permissions separately
+              Geolocation.getCurrentPosition(
+                () => resolve('granted'),
+                () => resolve('denied')
+              );
+            }
+          }, 'always');
+        });
         const isGranted = status === 'granted';
         setLocationPermissionGranted(isGranted);
         return isGranted;
@@ -69,7 +119,7 @@ export const LocationProvider = ({ children }) => {
 
   // Initialize location tracking
   useEffect(() => {
-    const initializeLocation = async () => {
+    const initializeLocation = async (): Promise<void> => {
       const hasPermission = await requestLocationPermissions();
       
       if (hasPermission) {
@@ -88,7 +138,7 @@ export const LocationProvider = ({ children }) => {
 
   // Start tracking location when enabled
   useEffect(() => {
-    let locationTimer = null;
+    let locationTimer: number | null = null;
     
     if (isTrackingEnabled && locationPermissionGranted) {
       // Check location every minute
@@ -113,7 +163,7 @@ export const LocationProvider = ({ children }) => {
   }, [isTrackingEnabled, locationPermissionGranted, gymLocations, workoutTimeWindow]);
 
   // Check if user is at any of the gym locations
-  const checkIfAtGym = (location) => {
+  const checkIfAtGym = (location: GeoLocation): void => {
     if (!location || gymLocations.length === 0) {
       setIsAtGym(false);
       return;
@@ -147,7 +197,7 @@ export const LocationProvider = ({ children }) => {
   };
 
   // Add a new gym location
-  const addGymLocation = async () => {
+  const addGymLocation = async (): Promise<boolean> => {
     try {
       if (!locationPermissionGranted) {
         const granted = await requestLocationPermissions();
@@ -169,7 +219,7 @@ export const LocationProvider = ({ children }) => {
       }
       
       // Add the new gym location
-      const newGym = {
+      const newGym: GymLocation = {
         id: Date.now().toString(),
         name: `Gym Location ${gymLocations.length + 1}`,
         latitude: location.latitude,
@@ -188,19 +238,19 @@ export const LocationProvider = ({ children }) => {
   };
 
   // Remove a gym location
-  const removeGymLocation = (locationId) => {
+  const removeGymLocation = (locationId: string): void => {
     setGymLocations(gymLocations.filter(gym => gym.id !== locationId));
   };
 
   // Update gym location name
-  const updateGymLocationName = (locationId, newName) => {
+  const updateGymLocationName = (locationId: string, newName: string): void => {
     setGymLocations(gymLocations.map(gym => 
       gym.id === locationId ? { ...gym, name: newName } : gym
     ));
   };
 
   // Toggle location tracking
-  const toggleLocationTracking = async () => {
+  const toggleLocationTracking = async (): Promise<boolean> => {
     try {
       if (!isTrackingEnabled && !locationPermissionGranted) {
         const granted = await requestLocationPermissions();
@@ -219,7 +269,7 @@ export const LocationProvider = ({ children }) => {
   };
 
   // Update workout time window
-  const updateWorkoutTimeWindow = (startTime, endTime) => {
+  const updateWorkoutTimeWindow = (startTime: string, endTime: string): void => {
     setWorkoutTimeWindow({
       start: startTime,
       end: endTime,
@@ -227,7 +277,7 @@ export const LocationProvider = ({ children }) => {
   };
 
   // Clear any error messages
-  const clearError = () => {
+  const clearError = (): void => {
     setError(null);
   };
 
