@@ -1,0 +1,113 @@
+# OSX
+#
+workout_app/.DS_Store
+
+# Xcode
+#
+workout_app/build/
+workout_app/*.pbxuser
+workout_app/!default.pbxuser
+workout_app/*.mode1v3
+workout_app/!default.mode1v3
+workout_app/*.mode2v3
+workout_app/!default.mode2v3
+workout_app/*.perspectivev3
+workout_app/!default.perspectivev3
+workout_app/xcuserdata
+workout_app/*.xccheckout
+workout_app/*.moved-aside
+workout_app/DerivedData
+workout_app/*.hmap
+workout_app/*.ipa
+workout_app/*.xcuserstate
+workout_app/**/.xcode.env.local
+
+# Android/IntelliJ
+#
+workout_app/build/
+workout_app/.idea
+workout_app/.gradle
+workout_app/local.properties
+workout_app/*.iml
+workout_app/*.hprof
+workout_app/.cxx/
+workout_app/*.keystore
+workout_app/!debug.keystore
+workout_app/.kotlin/
+
+# node.js
+#
+workout_app/node_modules/
+workout_app/npm-debug.log
+workout_app/yarn-error.log
+
+# fastlane
+#
+# It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
+# screenshots whenever they are needed.
+# For more information about the recommended setup visit:
+# https://docs.fastlane.tools/best-practices/source-control/
+
+workout_app/**/fastlane/report.xml
+workout_app/**/fastlane/Preview.html
+workout_app/**/fastlane/screenshots
+workout_app/**/fastlane/test_output
+
+# Bundle artifact
+workout_app/*.jsbundle
+
+# Ruby / CocoaPods
+workout_app/**/Pods/
+workout_app//vendor/bundle/
+
+# Temporary files created by Metro to check the health of the file watcher
+workout_app/.metro-health-check*
+
+# testing
+workout_app/coverage
+
+# Yarn
+workout_app/.yarn/*
+workout_app/!.yarn/patches
+workout_app/!.yarn/plugins
+workout_app/!.yarn/releases
+workout_app/!.yarn/sdks
+workout_app/!.yarn/versions
+
+# React Native specific
+workout_app/node_modules/
+workout_app/android/.gradle/
+workout_app/android/.cxx/
+workout_app/android/app/build/
+workout_app/ios/Pods/
+workout_app/ios/build/
+workout_app/.expo/
+workout_app/.expo-shared/
+workout_app/.idea/
+workout_app/.vscode/
+workout_app/*.log
+workout_app/*.tmp
+workout_app/.DS_Store
+
+# Metro bundler
+workout_app/.metro-cache/
+workout_app/.metro-health-check*
+
+# Testing
+workout_app/coverage/
+workout_app/jest-cache/
+workout_app/jest-config.json
+
+# Build artifacts
+workout_app/*.jsbundle
+workout_app/*.map
+workout_app/*.hprof
+
+# Miscellaneous
+workout_app/*.iml
+workout_app/*.keystore
+workout_app/debug.keystore
+workout_app/*.hmap
+workout_app/*.ipa
+workout_app/*.xcuserstate
+workout_app/android/app/.cxx/
